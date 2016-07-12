@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Galerija</title>
+		
+		<style>
+		  body {
+		  	background-color: #FF9999;
+		  }
+
+		  h1 {
+		  	font-style: italic;
+		  }
+		  h1:hover {
+		  	font-style: italic;
+		  	color: red;
+		  }
+		  
+		  form input {
+		  	background-color: gray;
+		  }
+		  form input:focus {
+		  	background-color: white;
+		  	font-family: sans-serif;
+		  }
+		  
+		  .tags {
+		  	margin: auto;
+		  	width: 100%;
+		  	display: inline-block;
+		  }
+		  .tag {
+			background-color: #FF6666;
+			font-family: cursive;
+			border: 0;
+			border-radius: 26px;
+			margin: 5px;
+			padding: 6px 16px;
+			outline: 0;
+		  }
+		  .tag:hover {
+		  	background-color: rebeccapurple;
+		  	color: white;
+		  }
+		  .tag.active {
+		  	background-color: rebeccapurple;
+		  	color: white;
+		  }
+
+		  .thumbs {
+		  	margin: auto;
+		  	width: 100%;
+		  	display: inline-block;
+		  }
+		  .thumb {
+		  	max-height: 100%;
+		  	max-width: 100%;
+		  	border: 1px solid transparent;
+		  }
+		  .thumb.active {
+		  	border: 1px solid red;
+		  }
+
+		  .photo {
+		  	margin: auto;
+		  	width: 100%;
+		  	text-align: center;
+		  }
+		  .photo img {
+		  	max-height: 100%;
+		  	max-width: 100%;
+		  }
+		  .photo li {
+		  	padding: 5px;
+			border-left: 1px solid #424242;
+			display: inline-block;
+		  }
+		  .photo li:first-child {
+		  	border-left: 0;
+		  }
+		</style>
+		
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script type="text/javascript" src="js/htmlescaping.js"></script>
+		<script type="text/javascript"><!--
+			var trenutniTekst = "";
+		
+			$(document).ready(function() {
+				$.ajax({
+					url: "servlets/tags",
+					dataType: "json",
+					success: function(data) {
+						var tags = data;
+						var html = $('<div>').addClass('tags');
+
+						if (tags.length === 0) {
+							html.text("Nema rezultata.");
+						} else {
+							$.each(tags, function(index, tag) {
+								var escaped = htmlEscape(tag);
+								var button = $('<button>').addClass('tag').text(escaped);
+								button.click(function() {
+									// makni sve aktivne thumbnailove i dodaj obrub na thumbnail
+									$('.tag.active').removeClass('active');
+									$(this).addClass('active');
+
+									dohvatiSlicice(escaped);
+								});
+								html.append(button);
+							});
+						}
+
+						$("#tags").html(html);
+					}
+				});
+			});
+
+			function dohvatiSlicice(tag) {
+				console.log("Pozvana funkcija s tagom: " + tag);
+				$.ajax({
+					url: "servlets/thumbs?tag="+tag,
+					dataType: "json",
+					success: function(data) {
+						var thumbs = data;
+						var html = $('<p>').text("Odaberite sliku koju želite vidjeti u punoj veličini.");
+						html.append($('<div>').addClass('thumbs'));
+						
+						$.each(thumbs, function(index, thumb) {
+							var name = thumb.name;
+							var img = $('<img>').addClass('thumb').attr('src', 'servlets/thumbs?name='+name);
+							img.click(function() {
+								// makni sve aktivne thumbnailove i dodaj obrub na thumbnail
+								$('.thumb.active').removeClass('active');
+								$(this).addClass('active');
+
+								dohvatiVeliku(name);
+							});
+							html.append(img);
+						});
+
+						$("#thumbs").html(html);
+					}
+				});
+			}
+
+			function dohvatiVeliku(name) {
+				console.log("Pozvana funkcija s imenom: " + name);
+				$.ajax({
+					url: "servlets/photos?name="+name,
+					dataType: "json",
+					success: function(data) {
+						var photo = data;
+						var tags = photo.tags;
+
+						var html = $('<div>').addClass('photo');
+						var desc = $('<h3>').text(photo.desc);
+						var list = $('<ul>');
+						$.each(tags, function(index, tag) {
+							list.append($('<li>').text(tag));
+						});
+						var img = $('<img>').attr('src', 'servlets/photos?name='+name+'&showImg=true');
+						html.append(desc).append(list).append(img);
+
+						$("#photo").html(html);
+					}
+				});
+			}
+		//--></script>
+	</head>
+	<body>
+	
+		<h1 align="center">Galerija</h1>
+		
+		<p>Odaberite tag koji će prikazati sve slike s tim tagom.</p>
+
+		<div id="tags"></div>
+		<div id="thumbs"></div>
+		<div id="photo"></div>
+	</body>
+</html>
