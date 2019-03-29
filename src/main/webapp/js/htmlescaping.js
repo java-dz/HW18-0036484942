@@ -1,6 +1,6 @@
 /**
  * Funkcija preuzeta sa Stack Overflow-a:
- * 
+ *
  * http://stackoverflow.com/questions/1219860/html-encoding-in-javascript-jquery
  */
 

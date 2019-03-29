@@ -21,23 +21,23 @@ import hr.fer.zemris.java.hw18.PhotosDB;
  */
 @WebServlet(urlPatterns={"/servlets/tags"})
 public class ReturnTagsServlet extends HttpServlet {
-	/** Serialization UID. */
-	private static final long serialVersionUID = 1L;
+    /** Serialization UID. */
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<String> list = PhotosDB.getTags();
-		
-		String[] array = new String[list.size()];
-		list.toArray(array);
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        List<String> list = PhotosDB.getTags();
 
-		resp.setContentType("application/json;charset=UTF-8");
+        String[] array = new String[list.size()];
+        list.toArray(array);
 
-		Gson gson = new Gson();
-		String jsonText = gson.toJson(array);
+        resp.setContentType("application/json;charset=UTF-8");
 
-		resp.getWriter().write(jsonText);
-		resp.getWriter().flush();
-	}
-	
+        Gson gson = new Gson();
+        String jsonText = gson.toJson(array);
+
+        resp.getWriter().write(jsonText);
+        resp.getWriter().flush();
+    }
+
 }

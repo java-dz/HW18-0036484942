@@ -28,28 +28,28 @@ import hr.fer.zemris.java.hw18.PhotosDB;
  */
 @WebServlet(urlPatterns={"/servlets/photos"})
 public class PhotosServlet extends HttpServlet {
-	/** Serialization UID. */
-	private static final long serialVersionUID = 1L;
+    /** Serialization UID. */
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String name = req.getParameter("name");
-		Photo photo = PhotosDB.getPhoto(name);
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String name = req.getParameter("name");
+        Photo photo = PhotosDB.getPhoto(name);
 
-		boolean showImg = Boolean.parseBoolean(req.getParameter("showImg"));
-		if (!showImg) {
-			resp.setContentType("application/json;charset=UTF-8");
-			
-			Gson gson = new Gson();
-			String jsonText = gson.toJson(photo);
-	
-			resp.getWriter().write(jsonText);
-			resp.getWriter().flush();
-		} else {
-			resp.setContentType("image/jpg");
-			BufferedImage image = PhotosDB.getImage(photo);
-			ImageIO.write(image, "jpg", resp.getOutputStream());
-		}
-	}
-	
+        boolean showImg = Boolean.parseBoolean(req.getParameter("showImg"));
+        if (!showImg) {
+            resp.setContentType("application/json;charset=UTF-8");
+
+            Gson gson = new Gson();
+            String jsonText = gson.toJson(photo);
+
+            resp.getWriter().write(jsonText);
+            resp.getWriter().flush();
+        } else {
+            resp.setContentType("image/jpg");
+            BufferedImage image = PhotosDB.getImage(photo);
+            ImageIO.write(image, "jpg", resp.getOutputStream());
+        }
+    }
+
 }

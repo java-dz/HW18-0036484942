@@ -30,37 +30,37 @@ import hr.fer.zemris.java.hw18.PhotosDB;
  * {@link PhotosDB#getThumbnail(Photo)} and is written to the response output
  * stream.
  * </ol>
- * 
+ *
  * @author Mario Bobic
  */
 @WebServlet(urlPatterns={"/servlets/thumbs"})
 public class ThumbnailsServlet extends HttpServlet {
-	/** Serialization UID. */
-	private static final long serialVersionUID = 1L;
+    /** Serialization UID. */
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String tag = req.getParameter("tag");
-		String name = req.getParameter("name");
-		
-		if (tag != null) {
-			resp.setContentType("application/json;charset=UTF-8");
-			
-			List<Photo> list = PhotosDB.getPhotosByTag(tag);
-			Photo[] array = new Photo[list.size()];
-			list.toArray(array);
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String tag = req.getParameter("tag");
+        String name = req.getParameter("name");
 
-			Gson gson = new Gson();
-			String jsonText = gson.toJson(array);
+        if (tag != null) {
+            resp.setContentType("application/json;charset=UTF-8");
 
-			resp.getWriter().write(jsonText);
-			resp.getWriter().flush();
-		} else if (name != null) {
-			resp.setContentType("image/jpg");
-			Photo photo = PhotosDB.getPhoto(name);
-			BufferedImage thumb = PhotosDB.getThumbnail(photo);
-			ImageIO.write(thumb, "jpg", resp.getOutputStream());
-		}
-	}
-	
+            List<Photo> list = PhotosDB.getPhotosByTag(tag);
+            Photo[] array = new Photo[list.size()];
+            list.toArray(array);
+
+            Gson gson = new Gson();
+            String jsonText = gson.toJson(array);
+
+            resp.getWriter().write(jsonText);
+            resp.getWriter().flush();
+        } else if (name != null) {
+            resp.setContentType("image/jpg");
+            Photo photo = PhotosDB.getPhoto(name);
+            BufferedImage thumb = PhotosDB.getThumbnail(photo);
+            ImageIO.write(thumb, "jpg", resp.getOutputStream());
+        }
+    }
+
 }
